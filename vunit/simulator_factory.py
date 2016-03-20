@@ -17,6 +17,7 @@ from vunit.incisive_interface import IncisiveInterface
 from vunit.simulator_interface import (BooleanOption,
                                        ListOfStringOption,
                                        VHDLAssertLevelOption)
+from vunit.xsim_interface import XSimInterface
 
 
 class SimulatorFactory(object):
@@ -33,7 +34,8 @@ class SimulatorFactory(object):
                 RivieraProInterface,
                 ActiveHDLInterface,
                 GHDLInterface,
-                IncisiveInterface]
+                IncisiveInterface,
+                XSimInterface]
 
     def _extract_compile_options(self):
         """
