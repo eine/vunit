@@ -66,12 +66,9 @@ class SimulatorInterface(object):  # pylint: disable=too-many-public-methods
             return []
 
         paths = path.split(os.pathsep)
-        _, ext = os.path.splitext(executable)
-
-        if (sys.platform == 'win32' or os.name == 'os2') and (ext != '.exe'):
-            executable = executable + '.exe'
 
         result = []
+
         if isfile(executable):
             result.append(executable)
 
@@ -197,7 +194,13 @@ class SimulatorInterface(object):  # pylint: disable=too-many-public-methods
             return False
 
         try:
+            cwd = None
+            if isinstance(command, dict):
+               cwd = command['workdir']
+               command = command['cmd']
+
             output = check_output(command,
+                                  cwd = cwd,
                                   env=self.get_env())
             printer.write("passed", fg="gi")
             printer.write("\n")
@@ -299,13 +302,14 @@ def run_command(command, cwd=None, env=None):
     return False
 
 
-def check_output(command, env=None):
+def check_output(command, cwd=None, env=None):
     """
     Wrapper arround subprocess.check_output
     """
     try:
         output = subprocess.check_output(command,  # pylint: disable=unexpected-keyword-arg
                                          env=env,
+                                         cwd=cwd,
                                          stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
         err.output = err.output.decode("utf-8")

@@ -14,7 +14,7 @@
    import vunit_pkg::*; \
    initial \
      if (__runner__.setup(parameter_name)) \
-      while (__runner__.loop)
+      while (__runner__.loop())
 
 `define TEST_SUITE `TEST_SUITE_FROM_PARAMETER(runner_cfg)
 `define NESTED_TEST_SUITE `TEST_SUITE_FROM_PARAMETER(nested_runner_cfg)
@@ -34,7 +34,7 @@
          arg_str = arg_str.substr(i, arg_str.len()-1); \
       break; \
       end \
-   end 
+   end
 `define CREATE_MSG(full_msg,func_name,got,expected,prefix,msg=__none__) \
    string __none__; \
    string got_str; \
@@ -45,12 +45,35 @@
    expected_str ="";\
    `CREATE_ARG_STRING(got, got_str); \
    `CREATE_ARG_STRING(expected, expected_str); \
-   full_msg = {func_name, " failed! Got ",`"got`", "=",  got_str, " expected ", prefix, expected_str, ". ", msg}; 
+   full_msg = {func_name, " failed! Got ",`"got`", "=",  got_str, " expected ", prefix, expected_str, ". ", msg};
 `define CHECK_EQUAL(got,expected,msg=__none__) \
         assert ((got) === (expected)) else \
           begin \
-          `CREATE_MSG(full_msg, "CHECK_EQUAL", got, expected, "", msg); \
-             `__ERROR_FUNC(full_msg); \
+          //`CREATE_MSG(full_msg, "CHECK_EQUAL", got, expected, "", msg); \
+          //   `__ERROR_FUNC(full_msg); \
+             string __none__; \
+             string got_str; \
+             string expected_str; \
+             string full_msg; \
+             int index; \
+             got_str = "";\
+             expected_str ="";\
+             $swrite(got_str, got); \
+             $swrite(expected_str, expected); \
+               for (int i=0; i<got_str.len(); i++) begin \
+                  if (got_str[i] != " ") begin \
+                     got_str = got_str.substr(i, got_str.len()-1); \
+                     break; \
+                  end \
+               end \
+               for (int i=0; i<expected_str.len(); i++) begin \
+                  if (expected_str[i] != " ") begin \
+                     expected_str = expected_str.substr(i, expected_str.len()-1); \
+                     break; \
+                  end \
+               end \
+             full_msg = {"CHECK_EQUAL failed! Got ",`"got`", "=",  got_str, " expected ", expected_str, ". ", msg}; \
+             $fatal(full_msg); \
           end
 `define CHECK_NOT_EQUAL(got,expected,msg=__none__) \
         assert ((got) !== (expected)) else \

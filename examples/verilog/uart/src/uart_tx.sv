@@ -13,7 +13,7 @@ module uart_tx(clk, tx, tready, tvalid, tdata);
    output logic tx = 1'b1;
 
    // AXI stream for input bytes
-   output logic tready = 1'b1;
+   output logic tready;
    input logic  tvalid;
    input logic [7:0] tdata;
 

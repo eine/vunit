@@ -54,18 +54,23 @@ class XSimInterface(SimulatorInterface):
         """
 
         for library in project.get_libraries():
-            if not exists(library.directory):
-                os.makedirs(library.directory)
-            self._libraries[library.name] = library.directory
+            if not exists(library.directory + '\\xsim.dir'):
+                os.makedirs(library.directory+ '\\xsim.dir')
+            self._libraries[library.name] = library.directory + '\\xsim.dir'
 
     def compile_source_file_command(self, source_file):
         """
         Returns the command to compile a single source_file
         """
         if source_file.file_type == 'vhdl':
-            return self.compile_vhdl_file_command(source_file)
+            pass  # TODO
         elif source_file.file_type == 'verilog':
-            return self.compile_verilog_file_command(source_file)
+            cmd = [join(self._prefix, 'xvlog.bat'), source_file.name]
+            return self.compile_verilog_file_command(source_file, cmd)
+        elif source_file.file_type == 'systemverilog':
+            cmd = [join(self._prefix, 'xvlog.bat'), '--sv', source_file.name]
+            return self.compile_verilog_file_command(source_file, cmd)
+
 
         LOGGER.error("Unknown file type: %s", source_file.file_type)
         raise CompileError
@@ -80,19 +85,21 @@ class XSimInterface(SimulatorInterface):
             cmd += ["-L", "%s=%s" % (library_name, library_path)]
         return cmd
 
-    def compile_verilog_file_command(self, source_file):
+    def compile_verilog_file_command(self, source_file, cmd):
         """
         Returns the command to compile a vhdl file
         """
-        cmd = [join(self._prefix, 'xvlog'), '--sv', source_file.name]
-        cmd += ["--work", "%s=%s" % (source_file.library.name, source_file.library.directory)]
+        if (os.path.isdir(source_file.library.directory + '\\xsim.dir') and os.listdir(source_file.library.directory + '\\xsim.dir')):
+            pass  # TODO: to get nicer console printout when compiling
+            #cmd += ["--work", "%s=%s\\%s" % (source_file.library.name, source_file.library.directory, 'xsim.dir')]
         for library_name, library_path in self._libraries.items():
-            cmd += ["-L", "%s=%s" % (library_name, library_path)]
+            if (os.path.isdir(library_path + '\\work') and os.listdir(library_path + '\\work')):
+                cmd += ["-L", '"%s=%s\\%s"' % (library_name, library_path, "work")]
         for include_dir in source_file.include_dirs:
             cmd += ["--include", "%s" % include_dir]
         for define_name, define_val in source_file.defines:
             cmd += ["--define", "%s=%s" % (define_name, define_val)]
-        return cmd
+        return {'cmd' : ' '.join(cmd), 'workdir' : source_file.library.directory}
 
     def simulate(self,
                  output_path, test_suite_name, config, elaborate_only):
@@ -100,17 +107,20 @@ class XSimInterface(SimulatorInterface):
         Simulate with entity as top level using generics
         """
 
-        cmd = [join(self._prefix, 'xelab')]
+        cmd = [join(self._prefix, 'xelab.bat')]
+
         for library_name, library_path in self._libraries.items():
-            cmd += ["-L", "%s=%s" % (library_name, library_path)]
+            cmd += ["-L", '"%s=%s\\%s"' % (library_name, library_path, "work")]
         cmd += ["--runall"]
         cmd += ["%s.%s" % (config.library_name, config.entity_name)]
         for generic_name, generic_value in config.generics.items():
-            cmd += ["--generic_top", '%s="%s"' % (generic_name, generic_value)]
+            cmd += ["--generic_top", '"%s=%s"' % (generic_name, generic_value)]
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+        status = True
         try:
-            proc = Process(cmd, cwd=output_path)
+            proc = Process(' '.join(cmd), cwd=output_path)
             proc.consume_output()
-            return True
         except Process.NonZeroExitCode:
-            pass
-        return False
+            status = False
+        return status

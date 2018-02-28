@@ -79,7 +79,7 @@ class test_runner;
       end
 
       if (index == -1) begin
-         $error("Internal error: Cannot find 'enabled_test_cases' key");
+         $fatal("Internal error: Cannot find 'enabled_test_cases' key");
       end
 
       for (int i=index; i<runner_cfg.len(); i++) begin
@@ -106,7 +106,7 @@ class test_runner;
       end
 
       if (index == -1) begin
-         $error("Internal error: Cannot find 'output path' key");
+         $fatal("Internal error: Cannot find 'output path' key");
       end
 
       for (int i=index; i<runner_cfg.len(); i++) begin
@@ -217,8 +217,8 @@ class test_runner;
    task automatic watchdog(real timeout_in_ns);
       fork : wait_or_timeout
          begin
-            #(timeout_in_ns * 1ns);
-            $error("Timeout waiting finish after %.3f ns", timeout_in_ns);
+            #timeout;
+            $fatal("Timeout waiting finish after %.3f ns", timeout / 1ns);
             disable wait_or_timeout;
          end
          begin

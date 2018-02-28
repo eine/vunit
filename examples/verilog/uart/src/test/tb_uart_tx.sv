@@ -18,7 +18,7 @@ module tb_uart_tx;
    logic tx;
 
    // AXI stream for input bytes
-   logic tready;
+   logic  tready = 1'b1;
    logic  tvalid = 1'b0;
    logic  [7:0]tdata;
 
@@ -36,7 +36,7 @@ module tb_uart_tx;
    endtask
 
    task automatic check_all_was_received();
-      wait (words.size() == num_recv);
+      @(posedge clk iff words.size() == num_recv);
    endtask
 
    `TEST_SUITE begin
