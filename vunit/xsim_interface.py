@@ -11,7 +11,7 @@ Interface for Vivado XSim simulator
 from __future__ import print_function
 import logging
 from os.path import exists, join
-import os
+import os, shutil
 from vunit.ostools import Process
 from vunit.simulator_interface import SimulatorInterface
 from vunit.exceptions import CompileError
@@ -113,6 +113,7 @@ class XSimInterface(SimulatorInterface):
             cmd += ["-L", '"%s=%s\\%s"' % (library_name, library_path, "work")]
         cmd += ["--runall"]
         cmd += ["%s.%s" % (config.library_name, config.entity_name)]
+        shutil.copytree(os.path.dirname(self._libraries[config.library_name]), output_path)
         for generic_name, generic_value in config.generics.items():
             cmd += ["--generic_top", '"%s=%s"' % (generic_name, generic_value)]
         if not os.path.exists(output_path):
