@@ -12,6 +12,7 @@ from __future__ import print_function
 import logging
 from os.path import exists, join
 import os, shutil
+import subprocess
 from vunit.ostools import Process
 from vunit.simulator_interface import SimulatorInterface
 from vunit.exceptions import CompileError
@@ -26,6 +27,7 @@ class XSimInterface(SimulatorInterface):
     name = "xsim"
 
     package_users_depend_on_bodies = True
+    supports_gui_flag = True
 
     @classmethod
     def from_args(cls,
@@ -35,7 +37,7 @@ class XSimInterface(SimulatorInterface):
         Create instance from args namespace
         """
         prefix = cls.find_prefix()
-        return cls(prefix=prefix)
+        return cls(prefix=prefix, gui=args.gui)
 
     @classmethod
     def find_prefix_from_path(cls):
@@ -44,7 +46,8 @@ class XSimInterface(SimulatorInterface):
         """
         return cls.find_toolchain(["xsim"])
 
-    def __init__(self, prefix):
+    def __init__(self, prefix, gui=False):
+        self._gui = gui
         self._prefix = prefix
         self._libraries = {}
 
@@ -108,10 +111,11 @@ class XSimInterface(SimulatorInterface):
         """
 
         cmd = [join(self._prefix, 'xelab.bat')]
-
+        cmd += ["-debug", "typical"]
         for library_name, library_path in self._libraries.items():
             cmd += ["-L", '"%s=%s\\%s"' % (library_name, library_path, "work")]
-        cmd += ["--runall"]
+        if not (elaborate_only or self._gui):
+            cmd += ["--runall"]
         cmd += ["%s.%s" % (config.library_name, config.entity_name)]
         shutil.copytree(os.path.dirname(self._libraries[config.library_name]), output_path)
         for generic_name, generic_value in config.generics.items():
@@ -124,4 +128,20 @@ class XSimInterface(SimulatorInterface):
             proc.consume_output()
         except Process.NonZeroExitCode:
             status = False
+        if self._gui:
+            tcl_file = output_path + "\\xsim_startup.tcl"
+            vivado_cmd = [join(self._prefix, 'vivado.bat'), "-mode", "gui", "-source", tcl_file]
+            if not os.path.isfile(tcl_file):
+                with open(tcl_file, 'w+') as xsim_startup_file:
+                    xsim_startup_file.write("set_part xc7vx485tffg1157-1\n")
+                    xsim_startup_file.write("xsim " + ("%s.%s" % (config.library_name, config.entity_name)) + "\n")
+
+            print("out_path: " + str(output_path))
+            print("vivado_cmd: " + str(vivado_cmd))
+            try:
+                subprocess.call(vivado_cmd, cwd=output_path)
+            except Process.NonZeroExitCode:
+                pass
+            assert False
+
         return status
