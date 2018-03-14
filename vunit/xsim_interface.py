@@ -66,7 +66,7 @@ class XSimInterface(SimulatorInterface):
         Returns the command to compile a single source_file
         """
         if source_file.file_type == 'vhdl':
-            pass  # TODO
+            return self.compile_vhdl_file_command(source_file)
         elif source_file.file_type == 'verilog':
             cmd = [join(self._prefix, 'xvlog.bat'), source_file.name]
             return self.compile_verilog_file_command(source_file, cmd)
@@ -82,11 +82,12 @@ class XSimInterface(SimulatorInterface):
         """
         Returns the command to compile a vhdl file
         """
-        cmd = [join(self._prefix, 'xvhdl'), source_file.name]
-        cmd += ["--work", "%s=%s" % (source_file.library.name, source_file.library.directory)]
+        cmd = [join(self._prefix, 'xvhdl.bat'), source_file.name]
+        #cmd += ["--work", "%s=%s" % (source_file.library.name, source_file.library.directory)]
         for library_name, library_path in self._libraries.items():
-            cmd += ["-L", "%s=%s" % (library_name, library_path)]
-        return cmd
+            if (os.path.isdir(library_path + '\\work') and os.listdir(library_path + '\\work')):
+                cmd += ["-L", '"%s=%s\\%s"' % (library_name, library_path, "work")]
+        return {'cmd' : ' '.join(cmd), 'workdir' : source_file.library.directory}
 
     def compile_verilog_file_command(self, source_file, cmd):
         """
