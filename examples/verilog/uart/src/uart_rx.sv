@@ -4,6 +4,8 @@
 //
 // Copyright (c) 2014-2019, Lars Asplund lars.anders.asplund@gmail.com
 
+`timescale 1ns/1ps
+
 module uart_rx(clk, rx, overflow, tready, tvalid, tdata);
    parameter integer cycles_per_bit = 434;
 

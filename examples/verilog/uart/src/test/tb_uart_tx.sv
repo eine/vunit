@@ -4,6 +4,8 @@
 //
 // Copyright (c) 2014-2019, Lars Asplund lars.anders.asplund@gmail.com
 
+`timescale 1ns/1ps
+
 `include "vunit_defines.svh"
 
 module tb_uart_tx;

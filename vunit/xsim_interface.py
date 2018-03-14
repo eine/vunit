@@ -10,7 +10,7 @@ Interface for Vivado XSim simulator
 
 from __future__ import print_function
 import logging
-from os.path import exists, join
+from os.path import exists, join, isdir
 import os, shutil
 import subprocess
 from vunit.ostools import Process
@@ -29,6 +29,9 @@ class XSimInterface(SimulatorInterface):
     package_users_depend_on_bodies = True
     supports_gui_flag = True
 
+    def _has_output_flag(self):
+        return False
+
     @classmethod
     def from_args(cls,
                   output_path,  # pylint: disable=unused-argument
@@ -37,7 +40,7 @@ class XSimInterface(SimulatorInterface):
         Create instance from args namespace
         """
         prefix = cls.find_prefix()
-        return cls(prefix=prefix, gui=args.gui)
+        return cls(prefix=prefix, output_path=output_path, gui=args.gui)
 
     @classmethod
     def find_prefix_from_path(cls):
@@ -47,13 +50,14 @@ class XSimInterface(SimulatorInterface):
         return cls.find_toolchain(["xsim"])
 
     def check_tool(self, tool_name):
-        if os.path.exists(os.path.join(self._prefix, tool_name + '.bat')):
+        if exists(join(self._prefix, tool_name + '.bat')):
             return tool_name + '.bat'
-        elif os.path.exists(os.path.join(self._prefix, tool_name)):
+        elif exists(join(self._prefix, tool_name)):
             return tool_name
         raise Exception('Cannot find %s' % tool_name)
 
-    def __init__(self, prefix, gui=False):
+    def __init__(self, prefix, output_path, gui=False):
+        SimulatorInterface.__init__(self, output_path, gui)
         self._gui = gui
         self._prefix = prefix
         self._libraries = {}
@@ -68,7 +72,7 @@ class XSimInterface(SimulatorInterface):
         """
 
         for library in project.get_libraries():
-            path = os.path.join(library.directory, 'xsim.dir')
+            path = join(library.directory, 'xsim.dir')
             if not exists(path):
                 os.makedirs(path)
             self._libraries[library.name] = path
@@ -77,6 +81,7 @@ class XSimInterface(SimulatorInterface):
         """
         Returns the command to compile a single source_file
         """
+
         if source_file.file_type == 'vhdl':
             return self.compile_vhdl_file_command(source_file)
         elif source_file.file_type == 'verilog':
@@ -94,11 +99,11 @@ class XSimInterface(SimulatorInterface):
         """
         Returns the command to compile a vhdl file
         """
-        cmd = [join(self._prefix, self._xvhdl), source_file.name]
+        cmd = [join(self._prefix, self._xvhdl), "--2008", source_file.name]
         #cmd += ["--work", "%s=%s" % (source_file.library.name, source_file.library.directory)]
         for library_name, library_path in self._libraries.items():
-            path = os.path.join(library_path, 'work')
-            if (os.path.isdir(path) and os.listdir(path)):
+            path = join(library_path, 'work')
+            if (isdir(path) and os.listdir(path)):
                 cmd += ["-L", '"%s=%s"' % (library_name, path)]
         return {'cmd' : cmd, 'workdir' : source_file.library.directory}
 
@@ -106,13 +111,13 @@ class XSimInterface(SimulatorInterface):
         """
         Returns the command to compile a vhdl file
         """
-        path = os.path.join(source_file.library.directory, 'xsim.dir')
-        if (os.path.isdir(path) and os.listdir(path)):
+        path = join(source_file.library.directory, 'xsim.dir')
+        if isdir(path) and os.listdir(path):
             pass  # TODO: to get nicer console printout when compiling
             #cmd += ["--work", "%s=%s" % (source_file.library.name, path)]
         for library_name, library_path in self._libraries.items():
-            path = os.path.join(library_path, 'work')
-            if (os.path.isdir(path) and os.listdir(path)):
+            path = join(library_path, 'work')
+            if (isdir(path) and os.listdir(path)):
                 cmd += ["-L", '"%s=%s"' % (library_name, path)]
         for include_dir in source_file.include_dirs:
             cmd += ["--include", "%s" % include_dir]
@@ -129,15 +134,14 @@ class XSimInterface(SimulatorInterface):
         cmd = [join(self._prefix, self._xelab)]
         cmd += ["-debug", "typical"]
         for library_name, library_path in self._libraries.items():
-            path = os.path.join(library_path, 'work')
-            cmd += ["-L", '"%s=%s"' % (library_name, path)]
+            cmd += ["-L", '"%s=%s"' % (library_name, join(library_path, 'work'))]
         if not (elaborate_only or self._gui):
             cmd += ["--runall"]
         cmd += ["%s.%s" % (config.library_name, config.entity_name)]
         shutil.copytree(os.path.dirname(self._libraries[config.library_name]), output_path)
         for generic_name, generic_value in config.generics.items():
             cmd += ["--generic_top", '"%s=%s"' % (generic_name, generic_value)]
-        if not os.path.exists(output_path):
+        if not exists(output_path):
             os.makedirs(output_path)
         status = True
         try:
@@ -146,7 +150,7 @@ class XSimInterface(SimulatorInterface):
         except Process.NonZeroExitCode:
             status = False
         if self._gui:
-            tcl_file = os.path.join(output_path, "xsim_startup.tcl")
+            tcl_file = join(output_path, "xsim_startup.tcl")
             vivado_cmd = [join(self._prefix, self._vivado), "-mode", "gui", "-source", tcl_file]
             if not os.path.isfile(tcl_file):
                 with open(tcl_file, 'w+') as xsim_startup_file:
