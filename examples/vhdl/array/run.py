@@ -5,7 +5,7 @@
 # Copyright (c) 2014-2018, Lars Asplund lars.anders.asplund@gmail.com
 
 from os.path import join, dirname
-from vunit import VUnit
+from VUnit_docker import VUnit
 
 root = dirname(__file__)
 

@@ -1,18 +1,14 @@
 #! /usr/bin/env python
 
-import docker, os, sys
-client = docker.from_env()
+from sys import argv
+from docker import from_env
 
-cmd = sys.argv
-cmd[0] = 'ghdl'
-
-for i in range(len(cmd)):
-   cmd[i] = (cmd[i].replace(os.environ.get('PROJECT_DIR'),'/src')).replace(os.environ.get('VUNIT_DIR'),'/vunit')
-
-proc = client.containers.get('vunit-sim').exec_run(cmd, workdir='/src')
-print(proc.output.decode('UTF-8'))
-
-# exec_run(cmd, stdout=True, stderr=True, stdin=False, tty=False, privileged=False, user='', detach=False, stream=False, socket=False, environment=None, workdir=None)
-
-#import subprocess
-#subprocess.call(["ghdl"] + [fix_and_replace_stuff(arg) for arg in sys.argv])
+print(
+    from_env().
+    containers.
+    get('vunit-sim').
+    exec_run(
+        ['ghdl']+argv[1:],
+        workdir='/work/run'
+    ).output.decode('UTF-8')
+)

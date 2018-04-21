@@ -21,6 +21,7 @@ from vunit.simulator_interface import (SimulatorInterface,
 from vunit.exceptions import CompileError
 LOGGER = logging.getLogger(__name__)
 
+
 class GHDLInterface(SimulatorInterface):
     """
     Interface for GHDL simulator
@@ -168,21 +169,21 @@ class GHDLInterface(SimulatorInterface):
         """
         Returns the command to compile a vhdl file
         """
-        cmd = ['-a', '--workdir=%s' % source_file.library.directory,
+        cmd = [join(self._prefix, 'ghdl'), '-a', '--workdir=%s' % source_file.library.directory,
                '--work=%s' % source_file.library.name,
                '--std=%s' % self._std_str(source_file.get_vhdl_standard())]
         for library in self._project.get_libraries():
             cmd += ["-P%s" % library.directory]
         cmd += source_file.compile_options.get("ghdl.flags", [])
         cmd += [source_file.name]
-
-        return [join(self._prefix, 'ghdl')] + cmd
+        return cmd
 
     def _get_sim_command(self, config, output_path):
         """
         Return GHDL simulation command
         """
-        cmd = ['--elab-run']
+        cmd = [join(self._prefix, 'ghdl')]
+        cmd += ['--elab-run']
         cmd += ['--std=%s' % self._std_str(self._vhdl_standard)]
         cmd += ['--work=%s' % config.library_name]
         cmd += ['--workdir=%s' % self._project.get_library(config.library_name).directory]
@@ -202,8 +203,7 @@ class GHDLInterface(SimulatorInterface):
 
         if config.sim_options.get("disable_ieee_warnings", False):
             cmd += ["--ieee-asserts=disable"]
-
-        return [join(self._prefix, 'ghdl')] + cmd
+        return cmd
 
     def simulate(self,  # pylint: disable=too-many-locals
                  output_path,
