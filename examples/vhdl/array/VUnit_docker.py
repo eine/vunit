@@ -1,5 +1,5 @@
 from os.path import basename, dirname, realpath, abspath, isfile
-from os import environ
+from os import environ, pathsep
 import sys, docker
 
 from colorama import Fore
@@ -27,10 +27,10 @@ class VUnit():
                 from subprocess import run, PIPE, STDOUT
                 try:
                     # TODO: this fails if vunit is installed in a system without any valid simulator. How to get the vunit install path in such context?
-                    sys.path.insert(0, run(getcmd(), stdout=PIPE, stderr=STDOUT, check=True).stdout.decode('UTF-8'))
+                    environ['PATH'] += pathsep + run(getcmd(), stdout=PIPE, stderr=STDOUT, check=True).stdout.decode('UTF-8')
                 except:
                     sys.path.insert(0, '/work/vunit')
-                    sys.path.insert(0, '/work/vunit/bin')
+                    environ['PATH'] += pathsep + '/work/vunit/bin'
 
             from vunit import VUnit as vu
             ui = vu.from_argv()

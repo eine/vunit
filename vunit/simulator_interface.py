@@ -76,7 +76,7 @@ class SimulatorInterface(object):
         if isfile(executable):
             result.append(executable)
 
-        for prefix in paths + sys.path:
+        for prefix in paths:
             file_name = os.path.join(prefix, executable)
             if isfile(file_name):
                 # the file exists, we have a shot at spawn working
