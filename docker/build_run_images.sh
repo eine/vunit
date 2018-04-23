@@ -10,7 +10,7 @@ for v in "3.7-rc-alpine" "3.6-alpine" "3.5-alpine" "3.4-alpine" "2-alpine3.7"; d
   echo "travis_fold:start:$v"
   echo "FROM python:$v" > Dockerfile.tmp
   cat Dockerfile >> Dockerfile.tmp
-  docker build -t "vunit/boot:$v" -f Dockerfile.tmp .
+  docker build -t "vunit/run:$v" -f Dockerfile.tmp .
   echo "travis_fold:end:$v"
 done
 

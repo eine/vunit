@@ -16,24 +16,18 @@ class VUnit():
             VUnit(uargs, vols=vols).run()
             exit(0)
         else:
-            if environ.get('DOCKERIZED') is not None:
-                def getcmd():
-                    cmd = 'import sys;'
-                    cmd += "sys.path=['"+ "','".join(sys.path) +"'];" #pass the PYTHONPATH to the child
-                    cmd += 'import vunit;'
-                    cmd += 'from os.path import dirname, abspath, realpath;'
-                    cmd += 'print(abspath(realpath(dirname(vunit.__file__)+"/../bin")))'
-                    return ['python', '-c', cmd]
-                from subprocess import run, PIPE, STDOUT
+            try:
+                import vunit
+            except:
+                sys.path.insert(0, '/work/vunit')
                 try:
-                    # TODO: this fails if vunit is installed in a system without any valid simulator. How to get the vunit install path in such context?
-                    environ['PATH'] += pathsep + run(getcmd(), stdout=PIPE, stderr=STDOUT, check=True).stdout.decode('UTF-8')
+                    import vunit
                 except:
-                    sys.path.insert(0, '/work/vunit')
-                    environ['PATH'] += pathsep + '/work/vunit/bin'
+                    print('Error. Could not import VUnit. Please, set VUNIT_DIR')
+                    exit(1)
 
-            from vunit import VUnit as vu
-            ui = vu.from_argv()
+            environ['PATH'] += pathsep + abspath(realpath(dirname(vunit.__file__)+"/../bin"))
+            ui = vunit.VUnit.from_argv()
             return ui
 
     def __init__(self, argv, vols={}):
@@ -43,7 +37,7 @@ class VUnit():
 
         self.client = docker.from_env()
         self.sim_img = 'ghdl/ghdl:ubuntu18-llvm-5.0'
-        self.run_img = 'vunit/boot:3.6-alpine'
+        self.run_img = 'vunit/run:3.6-alpine'
         self.vols = vols
         self.args = [basename(argv[0])] + argv[1:]
 
@@ -52,7 +46,7 @@ class VUnit():
         if sim_img is not None:
             self.sim_img = sim_img
 
-        # get/set Boot image
+        # get/set Run image
         run_img = environ.get('VUNIT_RUN_IMG')
         if run_img is not None:
             self.run_img = run_img
@@ -103,7 +97,7 @@ class VUnit():
             exit(1)
         print('vunit-sim: ', container.short_id, container.status, container.image.tags)
 
-        # (re)start boot container in the background
+        # (re)start run container in the background
         try:
             container = self.client.containers.get('vunit-run')
             container.remove(force=True)
@@ -136,8 +130,7 @@ class VUnit():
         try:
             print(container.exec_run(
                 ['python'] + self.args,
-                workdir='/work/run',
-                environment=["DOCKERIZED=true"]
+                workdir='/work/run'
             ).output.decode('UTF-8'))
         except Exception as inst:
             # TODO: extract the content from the Error object and decode it with .decode('UTF-8')

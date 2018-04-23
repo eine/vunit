@@ -2,7 +2,7 @@ language: python
 python: '3.6'
 
 stages:
-#  - create vunit/boot images
+#  - create vunit/run images
   - dockerized vunit
   - test
   - build and update gh-pages
@@ -77,7 +77,7 @@ jobs:
     stage: dockerized vunit
     env:
       - BUILD_NAME=py27-acceptance-ghdl
-      - VUNIT_BOOT_IMG="vunit/boot:2-alpine3.7"
+      - VUNIT_RUN_IMG="vunit/run:2-alpine3.7"
       - VUNIT_SIM_IMG="ghdl/ghdl:stretch-mcode"
     python: '2.7'
     os: linux
@@ -95,7 +95,7 @@ jobs:
   - <<: *acceptance
     env:
       - BUILD_NAME=py36-acceptance-ghdl
-      - VUNIT_BOOT_IMG="vunit/boot:3.6-alpine"
+      - VUNIT_RUN_IMG="vunit/run:3.6-alpine"
       - VUNIT_SIM_IMG="ghdl/ghdl:ubuntu18-llvm-5.0"
     python: '3.6'
     script: VUNIT_DIR=$(pwd) python examples/vhdl/array/run.py -d -v
@@ -151,13 +151,13 @@ jobs:
 #          all_branches: true
 #          tags: true
 #
-#  - stage: create vunit/boot images
+#  - stage: create vunit/run images
 #    <<: *acceptance
-#    env:  BUILD_NAME="boot images"
+#    env:  BUILD_NAME="run images"
 #    language: minimal
 #    install: skip
 #    before_script:
-#    script: ./docker/build_boot_images.sh
+#    script: ./docker/build_run_images.sh
 #    addons:
 #      apt:
 #        packages: docker-ce

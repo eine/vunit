@@ -46,7 +46,7 @@ Script `docker/runpy.sh` is provided to help users execute tests in hosts with n
 When the VUnit execution script is run natively with the docker flag, two containers are executed in the background:
 
 - `vunit-sim`: any container with GHDL installed and available in the PATH. Defaults to `ghdl/ghdl:ubuntu18-llvm-5.0`, and can be overriden with envvar `VUNIT_SIM_IMG`.
-- `vunit-run`: any container with Python (including packages colorama and docker) and Docker CLI. Defaults to `vunit/boot:3.6-alpine`, and can be overriden with envvar `VUNIT_RUN_IMG`.
+- `vunit-run`: any container with Python (including packages colorama and docker) and Docker CLI. Defaults to `vunit/run:3.6-alpine`, and can be overriden with envvar `VUNIT_RUN_IMG`.
 
 Both containers share the same paths with the host. On top of that, the docker unix socket of the host is bind to `vunit-run`.
 
@@ -62,5 +62,4 @@ If python is not available in the host, `runpy.sh` first runs a temporal contain
 
 # TODO
 
-- [ ] `VUnit_docker.py:30`:  this fails if vunit is installed in a system without any valid simulator. How to get the vunit install path in such context?
-- [ ] `VUnit_docker.py:144`: extract the content from the Error object and decode it with `.decode('UTF-8')`
+- [ ] `VUnit_docker.py:136`: extract the content from the Error object and decode it with `.decode('UTF-8')`
