@@ -1,0 +1,18 @@
+{
+	"add": [
+		"osvvm",
+		"array_util",
+		"verification_components"
+	],
+	"libs": {
+		"lib": [
+			"src/*.vhd",
+			"src/**/*.vhd"
+		]
+	},
+  "tb_cfg": {
+    "image_width": 256,
+    "image_height": 128,
+    "zpadding": "false"
+  }
+}
