@@ -14,4 +14,28 @@ ui.add_random()
 ui.add_verification_components()
 lib = ui.library("vunit_lib")
 lib.add_source_files(join(root, "test", "*.vhd"))
+
+
+def encode(tb_cfg):
+    return ",".join(["%s:%s" % (key, str(tb_cfg[key])) for key in tb_cfg])
+
+
+def gen_avalon_tests(obj, *args):
+    for data_width, num_cycles, readdatavalid_prob, waitrequest_prob, in product(*args):
+        tb_cfg = dict(
+            data_width=data_width,
+            readdatavalid_prob=readdatavalid_prob,
+            waitrequest_prob=waitrequest_prob,
+            num_cycles=num_cycles)
+        config_name = encode(tb_cfg)
+        obj.add_config(name=config_name,
+                       generics=dict(encoded_tb_cfg=encode(tb_cfg)))
+
+
+tb_avalon_slave = lib.test_bench("tb_avalon_slave")
+
+for test in tb_avalon_slave.get_tests():
+    gen_avalon_tests(test, [32], [1, 2, 64], [1.0, 0.3], [0.0, 0.4])
+
+
 ui.main()
