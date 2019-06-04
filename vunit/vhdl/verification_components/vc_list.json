@@ -6,5 +6,9 @@
     "UART": {
         "path": "vc_uart",
         "remote": "https://github.com/VUnit/vc_uart"
+    },
+    "Avalon": {
+        "path": "vc_avalon",
+        "remote": "https://github.com/VUnit/vc_avalon"
     }
 }
