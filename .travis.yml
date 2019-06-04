@@ -1,0 +1,7 @@
+services: docker
+language: minimal
+install: skip
+script:
+  - git clone -b distributed-vcs --recurse-submodules https://github.com/1138-4EB/vunit /tmp/vunit
+  - docker run --rm -tv /tmp/vunit:/tmp/vunit -e PYTHONPATH=/tmp/vunit -v $(pwd):/src -w /src vunit/dev:mcode tox -e py37-acceptance-ghdl
+
