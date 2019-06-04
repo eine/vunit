@@ -10,5 +10,9 @@
     "Avalon": {
         "path": "vc_avalon",
         "remote": "https://github.com/VUnit/vc_avalon"
+    },
+    "Wishbone": {
+        "path": "vc_wishbone",
+        "remote": "https://github.com/VUnit/vc_wishbone"
     }
 }
