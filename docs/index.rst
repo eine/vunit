@@ -1,42 +1,80 @@
+VUnit: a test framework for HDL
+===============================
 
-.. vunit index file, created by `ablog start` on Fri Jan 29 21:15:19 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. raw:: html
 
-VUnit
-=====
-VUnit is an open source unit testing framework for VHDL/SystemVerilog
-released under the terms of Mozilla Public License, v. 2.0. It
-features the functionality needed to realize continuous and automated
-testing of your HDL code. VUnit doesn't replace but rather complements
-traditional testing methodologies by supporting a "test early and
-often" approach through automation. :ref:`Read more <about>`
+   <p align="center">
+     <a title="GitHub VUnit/vunit"
+        href="https://github.com/VUnit/vunit"
+     ><img src="https://img.shields.io/badge/VUnit/vunit-0c479d.svg?longCache=true&style=flat-square&logo=github"
+     /></a>
 
-.. image:: vunit_demo.gif
+     <a title="Stars"
+        href="https://github.com/VUnit/vunit/stargazers"
+     ><img src="https://img.shields.io/github/stars/VUnit/vunit.svg?longCache=true&style=flat-square&color=0c479d"
+     /></a>
 
-Latest Posts
-------------
+     <a title="Forks"
+        href="https://github.com/ghdl/ghdl/network"
+     ><img src="https://img.shields.io/github/forks/VUnit/vunit.svg?longCache=true&style=flat-square&color=0c479d"
+     /></a>
 
-.. postlist:: 5
+     <a title="Watchers"
+        href="https://github.com/ghdl/ghdl/watchers"
+     ><img src="https://img.shields.io/github/watchers/VUnit/vunit.svg?longCache=true&style=flat-square&color=0c479d"
+     /></a>
+
+     <a title="Youtube - Lars Asplund"
+        href="https://youtube.com/channel/UCCPVCaeWkz6C95aRUTbIwdg"
+     ><img src="https://img.shields.io/badge/-YouTube-red.svg?longCache=true&style=flat-square&logo=youtube"
+     /></a>
+
+     <a title="Twitter - @VUnitFramework"
+        href="https://www.twitter.com/VUnitFramework"
+     ><img src="https://img.shields.io/twitter/follow/VUnitFramework.svg?longCache=true&style=flat-square&color=1DA1F2&label=%40VUnitFramework&logo=twitter&logoColor=fff"
+     /></a>
+   </p>
+
+.. include:: readme.rst
+
+..
+   Latest Posts
+   ------------
+   :postlist: 5
    :date: %B %d, %Y
    :format: {title} by {author} on {date}
    :list-style: disk
    :excerpts:
 
+.. toctree::
+   :maxdepth: 0
+   :titlesonly:
+   :hidden:
 
-.. `toctree` directive, below, contains list of non-post `.rst` files.
-   This is how they appear in Navigation sidebar. Note that directive
-   also contains `:hidden:` option so that it is not included inside the page.
-
-   Posts are excluded from this directive so that they aren't double listed
-   in the sidebar both under Navigation and Recent Posts.
+   blog/blog
 
 .. toctree::
+   :caption: About
    :hidden:
 
    about
    installing
-   documentation
    testimonials/testimonials
-   contributing
+
+.. toctree::
+   :caption: Documentation
+   :hidden:
+
+   user_guide
+   python_interface
+   cli
+   vhdl_libraries
+   examples
+
+.. toctree::
+   :caption: Appendix
+   :hidden:
+
    release_notes
+   contributing
+   genindex

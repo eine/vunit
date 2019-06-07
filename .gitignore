@@ -1,4 +1,6 @@
 **/vunit_out
+**.egg-info
+**.tox
 *.pyc
 *.bak
 *.o
@@ -7,6 +9,12 @@
 .vscode
 .devcontainer
 docs/_build
+docs/_theme
+docs/theme.tgz
+docs/context.json
 docs/examples.rst
+docs/license.rst
+docs/readme.rst
 docs/release_notes.rst
 vunit/test/acceptance/*_out
+docs/verification_components/third_party.rst

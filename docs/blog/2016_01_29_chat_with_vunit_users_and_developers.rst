@@ -1,7 +1,6 @@
-.. post:: Jan 29, 2016
-   :tags: VUnit
-   :author: lasplund
-   :excerpt: 1
+:tags: VUnit
+:author: lasplund
+:excerpt: 1
 
 Chat with VUnit Users and Developers
 ====================================

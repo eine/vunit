@@ -1,7 +1,6 @@
-.. post:: Jun 03, 2017
-   :tags: VUnit
-   :author: lasplund
-   :excerpt: 2
+:tags: VUnit
+:author: lasplund
+:excerpt: 2
 
 Enable Your Simulator to Handle Complex Top-Level Generics
 ==========================================================

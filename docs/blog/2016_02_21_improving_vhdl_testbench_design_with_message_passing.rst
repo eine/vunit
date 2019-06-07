@@ -1,13 +1,12 @@
-.. post:: Feb 21, 2016
-   :tags: VUnit
-   :author: lasplund
-   :excerpt: 1
-   :image: 1
+:tags: VUnit
+:author: lasplund
+:excerpt: 1
+:image: 1
 
 Improving VHDL Testbench Design with Message Passing
 ====================================================
 
-.. figure:: orange_man.jpeg
+.. figure:: img/orange_man.jpeg
    :alt: message passing
    :align: center
 
@@ -149,7 +148,7 @@ alphabet. This shift value equals 1 in my example so that *a* is
 encrypted to *b*, *b* is encrypted to *c* and so on. The latency is
 three clock cycles.
 
-.. figure:: caesar_encoder.png
+.. figure:: img/caesar_encoder.png
    :alt: Caesar Encoder
    :align: center
 
@@ -227,7 +226,7 @@ below, and we never verify the situation in the hello world example
 shown previously where the sentences are separated with a single clock
 cycle.
 
-.. figure:: low_throughput.png
+.. figure:: img/low_throughput.png
    :alt: Low Throughput
    :align: center
 
@@ -254,7 +253,7 @@ model <https://en.wikipedia.org/wiki/Actor_model>`__) which communicates
 with each other using *messages* sent over an abstract communication
 medium called the *net*.
 
-.. figure:: message_passing_model.png
+.. figure:: img/message_passing_model.png
    :alt: Message Passing Model
    :align: center
 
@@ -332,7 +331,7 @@ remain. To refine this design pattern I will also have a dedicated
 still the entry point for understanding the testbench as it will
 continue to coordinate the actions of the others.
 
-.. figure:: third_interface.png
+.. figure:: img/third_interface.png
    :alt: Third Interface
    :align: center
 

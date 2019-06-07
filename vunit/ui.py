@@ -253,9 +253,6 @@ from os.path import (
     basename,
     dirname,
     exists,
-    isabs,
-    isdir,
-    isfile,
     join,
     normpath,
     splitext,
@@ -1111,19 +1108,6 @@ avoid location preprocessing of other functions sharing name with a VUnit log or
         :returns: a dict containing the 'third_party' location and the known/supported VCs.
         """
         self._builtins.add("verification_components")
-        if location:
-            return _read_vcs_cfg(location=location)
-
-    def use_verification_components(self, cfg, vc_list):
-        """
-        Use verification components named in 'vc_list' and defined in 'cfg'
-
-        :param cfg: the configuration object returned by 'add_verification_components'.
-        :param vc_list: a list containing the names of the VCs which are to be used.
-        """
-        def add_vc_library(vc_cfg, loc):
-            self.add_library(vc_cfg['lib'], allow_duplicate=True).add_source_files(join(loc, 'src', '*.vhd'))
-        _traverse_vc_cfg(cfg, vc_list, _add_vc, add_vc_library)
 
     def get_compile_order(self, source_files=None):
         """
@@ -1167,57 +1151,6 @@ avoid location preprocessing of other functions sharing name with a VUnit log or
             implementation_dependencies=True)
         return SourceFileList([SourceFile(source_file, self._project, self)
                                for source_file in source_files])
-
-
-def _read_vcs_cfg(location=None):
-    """
-
-    """
-    root = join(dirname(__file__), 'vhdl', 'verification_components')
-    cfg = {'third_party': location or join(root, 'third_party')}
-    cfg.update(json.loads(open(join(root, 'vc_list.json')).read()))
-    return cfg
-
-
-def _traverse_vc_cfg(cfg, vc_list, func, task, depends=True):
-    """
-
-    """
-    for key in vc_list:
-        if key not in cfg:
-            print('VC <' + key + '> not defined. Please add it to the configuration first.')
-            exit(1)
-        else:
-            func(key, cfg, task, depends=depends)
-
-
-def _add_vc(key, cfg, task, depends=True):
-    """
-    Add the sources of a known VC to this project
-
-    :param key: name of the VC to be added.
-    :param cfg: configuration object returned by 'add_verification_components'.
-    :param task: function to be executed for each valid VC configuration.
-    """
-    item = cfg[key]
-    loc = item['path'] if isabs(item['path']) else join(cfg['third_party'], item['path'])
-    if not isdir(loc):
-        print('VC <%s> not available found. Please install it to %s' % (key, loc))
-        exit(1)
-
-    vc_cfg_file = join(loc, 'vunit_cfg.json')
-    if not isfile(vc_cfg_file):
-        print('File <' + vc_cfg_file + '> not found.')
-        exit(1)
-    vc_cfg = json.loads(open(vc_cfg_file).read())
-
-    if depends:
-        for name, _ in vc_cfg['depends'].items():
-            if name == 'VUnit':
-                continue
-            _add_vc(name, cfg, task)
-
-    task(vc_cfg, loc)
 
 
 class Library(object):

@@ -1,7 +1,6 @@
-.. post:: Feb 1, 2016
-   :tags: VUnit
-   :author: lasplund
-   :excerpt: 2
+:tags: VUnit
+:author: lasplund
+:excerpt: 2
 
 .. _vunit_website_updates:
 
@@ -9,7 +8,7 @@
 Website Updates
 ===============
 
-.. figure:: blogging_chat_room_documentation.png
+.. figure:: img/blogging_chat_room_documentation.png
 
 Our website has been updated with a
 `Gitter <https://gitter.im>`__-based

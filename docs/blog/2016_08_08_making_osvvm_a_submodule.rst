@@ -1,7 +1,6 @@
-.. post:: Aug 8, 2016
-   :tags: VUnit, OSVVM
-   :author: lasplund
-   :excerpt: 1
+:tags: VUnit, OSVVM
+:author: lasplund
+:excerpt: 1
 
 Making OSVVM a Git Submodule
 ====================================================

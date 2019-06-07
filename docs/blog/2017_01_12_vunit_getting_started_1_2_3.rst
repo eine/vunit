@@ -1,7 +1,6 @@
-.. post:: Jan 12, 2017
-   :tags: VUnit
-   :author: lasplund
-   :excerpt: 1
+:tags: VUnit
+:author: lasplund
+:excerpt: 1
 
 VUnit - Getting Started 1-2-3
 =============================

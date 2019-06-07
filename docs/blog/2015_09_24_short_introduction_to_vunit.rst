@@ -1,7 +1,6 @@
-.. post:: Sep 24, 2015
-   :tags: VUnit
-   :author: lasplund
-   :excerpt: 2
+:tags: VUnit
+:author: lasplund
+:excerpt: 2
 
 .. _short_introduction_to_vunit_post:
 
@@ -10,7 +9,7 @@ Short Introduction to VUnit
 **Originally posted and commented on** `LinkedIn <https://www.linkedin.com/pulse/short-introduction-vunit-lars-asplund?trk=mp-author-card>`_.
 
 
-.. image:: 4x.png
+.. image:: img/4x.png
 
 `VUnit <https://github.com/VUnit/vunit>`__ is a free and open source
 unit testing framework for VHDL that was released in November last year.

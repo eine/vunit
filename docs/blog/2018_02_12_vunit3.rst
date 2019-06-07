@@ -1,13 +1,12 @@
-.. post:: Feb 12, 2018
-   :tags: VUnit
-   :author: kraigher, lasplund
-   :image: 1
-   :excerpt: 1
+:tags: VUnit
+:author: kraigher, lasplund
+:image: 1
+:excerpt: 1
 
 VUnit 3.0
 =========
 
-.. figure:: VUnit3.0.png
+.. figure:: img/VUnit3.0.png
    :alt: VUnit 3.0
    :align: center
 
@@ -102,7 +101,7 @@ VUnit 3.0 contains a number of logging framework enhancements that goes
 hand in hand with the verification components. We have improved the
 log source hierarchy support which allows loggers to be arranged in a tree structure.
 
-.. figure:: logging_hierarchy.png
+.. figure:: img/logging_hierarchy.png
    :alt: logging hierarchy
    :align: center
 
@@ -143,7 +142,7 @@ tree depicted above and changes the visibilty for debug messages in the vc logge
 The result is that debug messages from the `main_logger` is hidden while debug messages from the
 alpha and beta components are visible.
 
-.. figure:: log_output.png
+.. figure:: img/log_output.png
    :alt: log output
    :align: center
 

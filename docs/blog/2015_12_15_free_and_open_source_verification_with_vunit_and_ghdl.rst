@@ -1,7 +1,6 @@
-.. post:: Dec 15, 2015
-   :tags: VUnit
-   :author: lasplund
-   :excerpt: 2
+:tags: VUnit
+:author: lasplund
+:excerpt: 2
 
 
 Free and Open Source Verification with VUnit and GHDL
@@ -9,7 +8,7 @@ Free and Open Source Verification with VUnit and GHDL
 **Originally posted and commented on** `LinkedIn
 <https://www.linkedin.com/pulse/free-open-source-verification-vunit-ghdl-lars-asplund?trk%20=pulse_spock-articles>`__.
 
-.. image:: CPU_load.png
+.. image:: img/CPU_load.png
 
 `VUnit <https://github.com/VUnit/vunit>`__ is a free and open source
 (FOSS) unit testing framework for VHDL that supports ModelSim,

@@ -1,11 +1,10 @@
-.. post:: Jan 26, 2016
-   :tags: VUnit
-   :author: lasplund
-   :excerpt: 1
+:tags: VUnit
+:author: lasplund
+:excerpt: 1
 
 Welcome to Our New Website
 ==========================
-.. image:: vunit_github_io.png
+.. image:: img/vunit_github_io.png
 
 Today I moved VUnit from my personal GitHub account to a dedicated
 `VUnit account <https://www.github.com/VUnit/vunit>`__. Links to the

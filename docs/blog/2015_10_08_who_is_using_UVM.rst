@@ -1,7 +1,6 @@
-.. post:: Oct 10, 2015
-   :tags: VUnit
-   :author: lasplund
-   :excerpt: 2
+:tags: VUnit
+:author: lasplund
+:excerpt: 2
 
 Who's Using UVM (or Not) for FPGA Development, and Why?
 =======================================================
@@ -9,7 +8,7 @@ Who's Using UVM (or Not) for FPGA Development, and Why?
 **Originally posted and commented on** `LinkedIn
 <https://www.linkedin.com/pulse/whos-using-uvm-fpga-development-why-lars-asplund?trk=mp-author-card>`__.
 
-.. image:: uvm.png
+.. image:: img/uvm.png
 
 Over the last few years a number of open source test solutions have
 emerged. I'm talking about tools like our
