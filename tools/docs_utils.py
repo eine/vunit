@@ -176,7 +176,7 @@ def _read_vcs_cfg(location=None):
     Read list of known third-party VC libraries/repositories
     """
     root = join(dirname(__file__), '..', 'vunit', 'vhdl', 'verification_components')
-    cfg = {'third_party': location or join(root, 'third_party')}
+    cfg = {'third_party': location or join(dirname(__file__), '..', '..')}
     cfg.update(json.loads(open(join(root, 'vc_list.json')).read()))
     return cfg
 

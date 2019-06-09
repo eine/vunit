@@ -33,7 +33,7 @@ def main():
     copy_common()
     custom_last('VUnit', 'vunit')
     examples()
-    third_party_vcs('/src')
+    third_party_vcs()
     create_release_notes()
     check_call([sys.executable, "-m", "sphinx",
                 "-T", "-E", "-W", "-a", "-n", "-b", "html",

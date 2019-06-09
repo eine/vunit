@@ -51,21 +51,26 @@ matrix:
   - env: BUILD_NAME=py27-docs
     python: '2.7'
     before_script: git fetch --unshallow --tags
-  - env: BUILD_NAME=py36-docs
+  - env:
+      - BUILD_NAME=py36-docs
+      - DOCKER_IMAGE=mcode
     python: '3.6'
-    before_script: git fetch --unshallow --tags
+    before_script:
+      - git fetch --unshallow --tags
+      - git clone https://github.com/VUnit/vc_uart && mv vc_uart ..
+      - git clone https://github.com/VUnit/vc_axi && mv vc_axi ..
     after_success: touch .tox/py36-docs/tmp/docsbuild/.nojekyll
     deploy:
       provider: pages
-      repo: VUnit/VUnit.github.io
-      target_branch: master
+      target_branch: gh-pages
       local_dir: .tox/py36-docs/tmp/docsbuild/
       # This environment variable is set to an OAuth token in travis vunit settings
       github_token: $GITHUB_PAGES_TOKEN
       skip_cleanup: true
       on:
-        repo: VUnit/vunit
-        branch: master
+        repo: 1138-4EB/vunit
+        branch: site-rework
+        #tags: true
 
   # Deploy to PyPI whenever the package version has changed
   # When a package version has not changed a new upload will not be triggered
