@@ -247,8 +247,19 @@ import sys
 import traceback
 import logging
 import json
-import os
-from os.path import exists, abspath, join, basename, splitext, normpath, dirname
+from os import mkdir, makedirs, environ, popen
+from os.path import (
+    abspath,
+    basename,
+    dirname,
+    exists,
+    isabs,
+    isdir,
+    isfile,
+    join,
+    normpath,
+    splitext,
+)
 from glob import glob
 from fnmatch import fnmatch
 from vunit.database import PickledDataBase, DataBase
@@ -887,7 +898,7 @@ avoid location preprocessing of other functions sharing name with a VUnit log or
             exit(1)
 
         if not exists(self._simulator_output_path):
-            os.makedirs(self._simulator_output_path)
+            makedirs(self._simulator_output_path)
 
         return self._simulator_class.from_args(args=self._args,
                                                output_path=self._simulator_output_path)
@@ -1011,7 +1022,7 @@ avoid location preprocessing of other functions sharing name with a VUnit log or
         if clean:
             ostools.renew_path(self._output_path)
         elif not exists(self._output_path):
-            os.makedirs(self._output_path)
+            makedirs(self._output_path)
 
         ostools.renew_path(self._preprocessed_path)
 
@@ -1080,12 +1091,6 @@ avoid location preprocessing of other functions sharing name with a VUnit log or
         """
         self._builtins.add("random")
 
-    def add_verification_components(self):
-        """
-        Add verification component library
-        """
-        self._builtins.add("verification_components")
-
     def add_osvvm(self):
         """
         Add osvvm library
@@ -1097,6 +1102,28 @@ avoid location preprocessing of other functions sharing name with a VUnit log or
         Add JSON-for-VHDL library
         """
         self._builtins.add("json4vhdl")
+
+    def add_verification_components(self, location=None):
+        """
+        Add verification component library
+
+        :param location: path of the optional directory to contain third-party VCs.
+        :returns: a dict containing the 'third_party' location and the known/supported VCs.
+        """
+        self._builtins.add("verification_components")
+        if location:
+            return _read_vcs_cfg(location=location)
+
+    def use_verification_components(self, cfg, vc_list):
+        """
+        Use verification components named in 'vc_list' and defined in 'cfg'
+
+        :param cfg: the configuration object returned by 'add_verification_components'.
+        :param vc_list: a list containing the names of the VCs which are to be used.
+        """
+        def add_vc_library(vc_cfg, loc):
+            self.add_library(vc_cfg['lib'], allow_duplicate=True).add_source_files(join(loc, 'src', '*.vhd'))
+        _traverse_vc_cfg(cfg, vc_list, _add_vc, add_vc_library)
 
     def get_compile_order(self, source_files=None):
         """
@@ -1140,6 +1167,57 @@ avoid location preprocessing of other functions sharing name with a VUnit log or
             implementation_dependencies=True)
         return SourceFileList([SourceFile(source_file, self._project, self)
                                for source_file in source_files])
+
+
+def _read_vcs_cfg(location=None):
+    """
+
+    """
+    root = join(dirname(__file__), 'vhdl', 'verification_components')
+    cfg = {'third_party': location or join(root, 'third_party')}
+    cfg.update(json.loads(open(join(root, 'vc_list.json')).read()))
+    return cfg
+
+
+def _traverse_vc_cfg(cfg, vc_list, func, task, depends=True):
+    """
+
+    """
+    for key in vc_list:
+        if key not in cfg:
+            print('VC <' + key + '> not defined. Please add it to the configuration first.')
+            exit(1)
+        else:
+            func(key, cfg, task, depends=depends)
+
+
+def _add_vc(key, cfg, task, depends=True):
+    """
+    Add the sources of a known VC to this project
+
+    :param key: name of the VC to be added.
+    :param cfg: configuration object returned by 'add_verification_components'.
+    :param task: function to be executed for each valid VC configuration.
+    """
+    item = cfg[key]
+    loc = item['path'] if isabs(item['path']) else join(cfg['third_party'], item['path'])
+    if not isdir(loc):
+        print('VC <%s> not available found. Please install it to %s' % (key, loc))
+        exit(1)
+
+    vc_cfg_file = join(loc, 'vunit_cfg.json')
+    if not isfile(vc_cfg_file):
+        print('File <' + vc_cfg_file + '> not found.')
+        exit(1)
+    vc_cfg = json.loads(open(vc_cfg_file).read())
+
+    if depends:
+        for name, _ in vc_cfg['depends'].items():
+            if name == 'VUnit':
+                continue
+            _add_vc(name, cfg, task)
+
+    task(vc_cfg, loc)
 
 
 class Library(object):
@@ -1994,7 +2072,7 @@ def select_vhdl_standard(vhdl_standard=None):
     if vhdl_standard is not None:
         check_vhdl_standard(vhdl_standard, from_str="From class initialization")
     else:
-        vhdl_standard = os.environ.get('VUNIT_VHDL_STANDARD', '2008')
+        vhdl_standard = environ.get('VUNIT_VHDL_STANDARD', '2008')
         check_vhdl_standard(vhdl_standard, from_str="VUNIT_VHDL_STANDARD environment variable")
 
     return vhdl_standard
