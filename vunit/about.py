@@ -70,4 +70,4 @@ def version():
 
 VERSION = (4, 1, 0)
 
-PRE_RELEASE = True
+PRE_RELEASE = False
