@@ -54,7 +54,10 @@ def tag_release(ver):
     check_output([
         'git',
         'tag',
-        '"v' + ver + '" -a -m "Generated tag from TravisCI for release ' + ver + '"'
+        'v%s' % ver,
+        '-a',
+        '-m',
+        'release %s' % ver,
     ])
 
 
@@ -91,7 +94,7 @@ def check_release(ver):
 if __name__ == "__main__":
     VER = get_local_version()
 
-    if sys.argv[1] == 'check':
+    if len(sys.argv) > 1 and sys.argv[1] == 'check':
         check_release(VER)
 
     tag_release(VER)

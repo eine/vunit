@@ -191,12 +191,17 @@ which is tagged.
 
 In order to tag a commit:
 
-- Set a new version in ``vunit/about.py``.
-- Add a corresponding release note in ``docs/release_notes/X.Y.Z.rst``. The
-  release note files in ``docs/release_notes/`` are used to
+- If required, bump version in ``vunit/about.py``.
+- Add a corresponding release notes in ``docs/release_notes/X.Y.Z.rst``. The
+  release notes files in ``docs/release_notes/`` are used to
   automatically generate the :ref:`release notes <release_notes>`.
+- Set ``PRE_RELASE`` in ``vunit/about.py`` to ``False``.
+- Commit changes.
 - Execute ``python tools/new_release.py``.
 - Push the new version/tag: ``git push vX.Y.Z``.
+- Set ``PRE_RELASE`` in ``vunit/about.py`` to ``True``.
+- Bump version in ``vunit/about.py``.
+- Commit changes.
 
 Travic CI makes a release by uploading a new package to PyPI when a tag
 named ``vX.Y.Z`` is found in Git. A new release will not be made if:
