@@ -29,7 +29,8 @@ class TestVunitArtificial(unittest.TestCase):
             self.output_path = join(dirname(__file__), "artificial_out")
         else:
             # Spaces in path intentional to verify that it is supported
-            self.output_path = join(dirname(__file__), "artificial _out")
+            unique_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+            self.output_path = join(dirname(__file__), unique_id + "artificial _out")
 
         self.report_file = join(self.output_path, "xunit.xml")
         self.artificial_run_vhdl = join(

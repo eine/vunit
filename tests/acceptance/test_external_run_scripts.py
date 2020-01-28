@@ -13,6 +13,8 @@ from os import environ
 from os.path import join, dirname
 from subprocess import call
 import sys
+import random
+import string
 from tests.common import check_report
 from vunit import ROOT
 from vunit.builtins import VHDL_PATH
@@ -277,7 +279,8 @@ class TestExternalRunScripts(unittest.TestCase):
         self.check(join(VHDL_PATH, "com", "run.py"))
 
     def setUp(self):
-        self.output_path = join(dirname(__file__), "external_run_out")
+        unique_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+        self.output_path = join(dirname(__file__), unique_id + "external_run_out")
         self.report_file = join(self.output_path, "xunit.xml")
 
     def check(self, run_file, args=None, vhdl_standard="2008", exit_code=0):
