@@ -1,0 +1,72 @@
+name: tox
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 5'
+
+env:
+  # https://github.com/tox-dev/tox/issues/1468
+  PY_COLORS: 1
+
+jobs:
+
+
+  win-pacman:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: true
+        install: >
+          mingw-w64-x86_64-python-pip
+          mingw-w64-x86_64-python-tox
+
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: '⚙️ Setup GHDL'
+      uses: ghdl/setup-ghdl-ci@master
+      with:
+        backend: llvm
+
+    - name: '🚧 Run job'
+      run: tox -e py39-unit -- --color=yes
+
+
+  win-pip:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: true
+        install: >
+          mingw-w64-x86_64-python-pip
+          mingw-w64-x86_64-python-tox
+
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: '⚙️ Setup GHDL'
+      uses: ghdl/setup-ghdl-ci@master
+      with:
+        backend: llvm
+
+    - name: '🐍 Install dependencies'
+      run: pip install -U tox --progress-bar off
+
+    - name: '🚧 Run job'
+      run: tox -e py39-unit -- --color=yes
